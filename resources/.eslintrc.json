@@ -1,0 +1,17 @@
+{
+    "extends": ["eslint:recommended"],
+    "plugins": [],
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "env": {
+      "browser": true,
+      "jquery": true
+    },
+    "globals": {
+      "require": true,
+      "module": true,
+      "__dirname": true
+    },
+    "rules": {}
+}
