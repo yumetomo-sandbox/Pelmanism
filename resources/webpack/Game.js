@@ -23,12 +23,6 @@ class Game {
       .on('opened', () => {
         this.openedCard();
       })
-      .on('secondCardOpen', (firstCardColor, secondCardColor) => {
-        this.judge(firstCardColor, secondCardColor);
-      })
-      .on('success', () => {
-        this.restart();
-      })
   }
 
   /**

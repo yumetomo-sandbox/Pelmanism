@@ -63,10 +63,6 @@ var Game = function () {
         _this.openCard(clickTargetIndex);
       }).on('opened', function () {
         _this.openedCard();
-      }).on('secondCardOpen', function (firstCardColor, secondCardColor) {
-        _this.judge(firstCardColor, secondCardColor);
-      }).on('success', function () {
-        _this.restart();
       });
     }
 
