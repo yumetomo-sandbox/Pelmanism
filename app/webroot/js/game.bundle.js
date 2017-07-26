@@ -192,7 +192,7 @@ var CardUI = exports.CardUI = function (_events) {
         var clickTarget = e.currentTarget;
 
         // 既に開かれている場合は処理しない
-        if (!(0, _jquery2.default)(clickTarget).hasClass('open')) {
+        if (!(0, _jquery2.default)(clickTarget).hasClass('open') && !(0, _jquery2.default)(clickTarget).hasClass('match')) {
           var clickTargetIndex = $cards.index((0, _jquery2.default)(clickTarget));
           _this.emit('selected', clickTargetIndex);
         }
@@ -216,7 +216,7 @@ var CardUI = exports.CardUI = function (_events) {
         marginLeft: [100, 0],
         marginRight: [100, 20]
       }, {
-        duration: 200,
+        duration: 150,
         complete: function complete() {
 
           $targetCard.addClass(colorClass + ' open');
@@ -227,7 +227,7 @@ var CardUI = exports.CardUI = function (_events) {
             marginLeft: [0, 100],
             marginRight: [20, 100]
           }, {
-            duration: 200,
+            duration: 150,
             complete: function complete() {
               _this2.emit('opened');
             }

@@ -17,7 +17,7 @@ export class CardUI extends events {
         let clickTarget = e.currentTarget;
 
         // 既に開かれている場合は処理しない
-        if( !$(clickTarget).hasClass('open') ){
+        if(!$(clickTarget).hasClass('open') && !$(clickTarget).hasClass('match')){
           let clickTargetIndex = $cards.index($(clickTarget));
           this.emit('selected', clickTargetIndex);
 
@@ -40,7 +40,7 @@ export class CardUI extends events {
       marginLeft: [100, 0],
       marginRight: [100, 20]
     },{
-      duration: 200,
+      duration: 150,
       complete: () => {
 
         $targetCard.addClass(`${colorClass} open`);
@@ -51,7 +51,7 @@ export class CardUI extends events {
           marginLeft: [0, 100],
           marginRight: [20, 100]
         },{
-          duration: 200,
+          duration: 150,
           complete: () => {
             this.emit('opened');
           }

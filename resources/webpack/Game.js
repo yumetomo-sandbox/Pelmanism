@@ -13,9 +13,11 @@ class Game {
 
     this.bind();
     this.setColors();
+
   }
 
   bind() {
+
     this.cardUI
       .on('selected', clickTargetIndex => {
         this.openCard(clickTargetIndex);
@@ -23,6 +25,7 @@ class Game {
       .on('opened', () => {
         this.openedCard();
       })
+
   }
 
   /**
@@ -79,6 +82,7 @@ class Game {
       alert('success !');
       this.restart();
     }
+    
   }
 
   restart() {
