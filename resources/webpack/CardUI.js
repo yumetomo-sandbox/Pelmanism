@@ -17,7 +17,8 @@ export class CardUI extends events {
         let clickTarget = e.currentTarget;
 
         // 既に開かれている場合は処理しない
-        if(!$(clickTarget).hasClass('open') && !$(clickTarget).hasClass('match')){
+        if(!$(clickTarget).hasClass('open') && !$(clickTarget).hasClass('match')) {
+
           let clickTargetIndex = $cards.index($(clickTarget));
           this.emit('selected', clickTargetIndex);
 
@@ -39,7 +40,7 @@ export class CardUI extends events {
       width: [0, 200],
       marginLeft: [100, 0],
       marginRight: [100, 20]
-    },{
+    }, {
       duration: 150,
       complete: () => {
 
@@ -50,10 +51,12 @@ export class CardUI extends events {
           width: [200, 0],
           marginLeft: [0, 100],
           marginRight: [20, 100]
-        },{
+        }, {
           duration: 150,
           complete: () => {
+
             this.emit('opened');
+
           }
         });
 
@@ -69,7 +72,7 @@ export class CardUI extends events {
       width: [0, 200],
       marginLeft: [100, 0],
       marginRight: [100, 20]
-    },{
+    }, {
       duration: 200,
       delay: 400,
       complete: () => {
@@ -81,7 +84,7 @@ export class CardUI extends events {
           width: [200, 0],
           marginLeft: [0, 100],
           marginRight: [20, 100]
-        },{
+        }, {
           duration: 200
         });
 
@@ -96,7 +99,7 @@ export class CardUI extends events {
       width: [0, 200],
       marginLeft: [100, 0],
       marginRight: [100, 20]
-    },{
+    }, {
       duration: 200,
       delay: 400,
       complete: () => {
@@ -108,7 +111,7 @@ export class CardUI extends events {
           width: [200, 0],
           marginLeft: [0, 100],
           marginRight: [20, 100]
-        },{
+        }, {
           duration: 200
         });
 
