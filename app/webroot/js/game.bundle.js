@@ -266,8 +266,8 @@ var CardUI = exports.CardUI = function (_events) {
     key: 'closeAllCards',
     value: function closeAllCards() {
 
-      var cards = (0, _jquery2.default)('li');
-      (0, _velocityAnimate2.default)(cards, {
+      var $cards = (0, _jquery2.default)('li');
+      (0, _velocityAnimate2.default)($cards, {
         width: [0, 200],
         marginLeft: [100, 0],
         marginRight: [100, 20]
@@ -276,10 +276,10 @@ var CardUI = exports.CardUI = function (_events) {
         delay: 400,
         complete: function complete() {
 
-          cards.removeClass();
-          cards.html('?');
+          $cards.removeClass();
+          $cards.html('?');
 
-          (0, _velocityAnimate2.default)(cards, {
+          (0, _velocityAnimate2.default)($cards, {
             width: [200, 0],
             marginLeft: [0, 100],
             marginRight: [20, 100]

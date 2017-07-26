@@ -63,7 +63,7 @@ export class CardUI extends events {
   }
 
   close() {
-    
+
     let $openCards = $('li.open');
     velocity($openCards, {
       width: [0, 200],
@@ -91,8 +91,8 @@ export class CardUI extends events {
 
   closeAllCards() {
 
-    let cards = $('li');
-    velocity(cards, {
+    let $cards = $('li');
+    velocity($cards, {
       width: [0, 200],
       marginLeft: [100, 0],
       marginRight: [100, 20]
@@ -101,10 +101,10 @@ export class CardUI extends events {
       delay: 400,
       complete: () => {
 
-        cards.removeClass();
-        cards.html('?');
+        $cards.removeClass();
+        $cards.html('?');
 
-        velocity(cards, {
+        velocity($cards, {
           width: [200, 0],
           marginLeft: [0, 100],
           marginRight: [20, 100]
