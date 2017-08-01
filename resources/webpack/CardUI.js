@@ -28,39 +28,41 @@ export class CardUI extends events {
 
   open(clickTargetIndex, colors) {
 
-    const COLOR_CLASS = colors[clickTargetIndex].class;
-    const COLOR_NAME = colors[clickTargetIndex].name;
-    const $TARGET_CARD = $('li').eq(clickTargetIndex);
+    return new Promise((resolve) => {
+      const COLOR_CLASS = colors[clickTargetIndex].class;
+      const COLOR_NAME = colors[clickTargetIndex].name;
+      const $TARGET_CARD = $('li').eq(clickTargetIndex);
 
-    velocity($TARGET_CARD, {
-      rotateY: ['180deg', '0deg'],
-      tween: 180
-    }, {
-      duration: 400,
-      progress: function(elements, complete, remaining, start, tweenValue) {
+      velocity($TARGET_CARD, {
+        rotateY: ['180deg', '0deg'],
+        tween: 180
+      }, {
+        duration: 400,
+        progress: function(elements, complete, remaining, start, tweenValue) {
 
-        if(tweenValue >= 90) {
-          if(!$TARGET_CARD.hasClass('open')){
-            $TARGET_CARD.addClass(`${COLOR_CLASS} open`);
-            $TARGET_CARD.html(COLOR_NAME);
+          if(tweenValue >= 90) {
+            if(!$TARGET_CARD.hasClass('open')){
+              $TARGET_CARD.addClass(`${COLOR_CLASS} open`);
+              $TARGET_CARD.html(COLOR_NAME);
+            }
+            const DIFFERENCE = tweenValue - 90;
+            const ROTATE_Y = 90 - DIFFERENCE;
+            $TARGET_CARD.css('transform','rotateY('+ ROTATE_Y +'deg)');
           }
-          const DIFFERENCE = tweenValue - 90;
-          const ROTATE_Y = 90 - DIFFERENCE;
-          $TARGET_CARD.css('transform','rotateY('+ ROTATE_Y +'deg)');
+
+        },
+        complete: () => {
+
+          resolve();
+
         }
-
-      },
-      complete: () => {
-
-        this.emit('opened');
-
-      }
+      });
     });
 
   }
 
   close() {
-
+    
     const $OPEN_CARDS = $('li.open');
     CardUI.flip($OPEN_CARDS);
 

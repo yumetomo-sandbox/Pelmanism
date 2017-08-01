@@ -60,9 +60,7 @@ var Game = function () {
       var _this = this;
 
       this.cardUI.on('selected', function (clickTargetIndex) {
-        _this.openCard(clickTargetIndex);
-      }).on('opened', function () {
-        _this.openedCard();
+        _this.openedCard(clickTargetIndex);
       });
     }
 
@@ -79,14 +77,17 @@ var Game = function () {
       this.colors = _underscore2.default.shuffle(this.colors);
     }
   }, {
-    key: 'openCard',
-    value: function openCard(clickTargetIndex) {
+    key: 'openedCard',
+    value: function openedCard(clickTargetIndex) {
+      var _this2 = this;
 
-      this.cardUI.open(clickTargetIndex, this.colors);
+      this.cardUI.open(clickTargetIndex, this.colors).then(function () {
+        return _this2.judge();
+      });
     }
   }, {
-    key: 'openedCard',
-    value: function openedCard() {
+    key: 'judge',
+    value: function judge() {
 
       var $OPEN_CARDS = (0, _jquery2.default)('li.open');
       var OPEN_CARDS_LENGTH = $OPEN_CARDS.length;
@@ -97,17 +98,12 @@ var Game = function () {
 
         var FIRST_CARD_COLOR = (0, _jquery2.default)(FIRST_CARD).text();
         var SECOND_CARD_COLOR = (0, _jquery2.default)(SECOND_CARD).text();
-        this.judge(FIRST_CARD_COLOR, SECOND_CARD_COLOR);
-      }
-    }
-  }, {
-    key: 'judge',
-    value: function judge(firstCardColor, secondCardColor) {
 
-      if (firstCardColor === secondCardColor) {
-        this.match();
-      } else {
-        this.cardUI.close();
+        if (FIRST_CARD_COLOR === SECOND_CARD_COLOR) {
+          this.match();
+        } else {
+          this.cardUI.close();
+        }
       }
     }
   }, {
@@ -203,33 +199,34 @@ var CardUI = exports.CardUI = function (_events) {
   _createClass(CardUI, [{
     key: 'open',
     value: function open(clickTargetIndex, colors) {
-      var _this2 = this;
 
-      var COLOR_CLASS = colors[clickTargetIndex].class;
-      var COLOR_NAME = colors[clickTargetIndex].name;
-      var $TARGET_CARD = (0, _jquery2.default)('li').eq(clickTargetIndex);
+      return new Promise(function (resolve) {
+        var COLOR_CLASS = colors[clickTargetIndex].class;
+        var COLOR_NAME = colors[clickTargetIndex].name;
+        var $TARGET_CARD = (0, _jquery2.default)('li').eq(clickTargetIndex);
 
-      (0, _velocityAnimate2.default)($TARGET_CARD, {
-        rotateY: ['180deg', '0deg'],
-        tween: 180
-      }, {
-        duration: 400,
-        progress: function progress(elements, complete, remaining, start, tweenValue) {
+        (0, _velocityAnimate2.default)($TARGET_CARD, {
+          rotateY: ['180deg', '0deg'],
+          tween: 180
+        }, {
+          duration: 400,
+          progress: function progress(elements, complete, remaining, start, tweenValue) {
 
-          if (tweenValue >= 90) {
-            if (!$TARGET_CARD.hasClass('open')) {
-              $TARGET_CARD.addClass(COLOR_CLASS + ' open');
-              $TARGET_CARD.html(COLOR_NAME);
+            if (tweenValue >= 90) {
+              if (!$TARGET_CARD.hasClass('open')) {
+                $TARGET_CARD.addClass(COLOR_CLASS + ' open');
+                $TARGET_CARD.html(COLOR_NAME);
+              }
+              var DIFFERENCE = tweenValue - 90;
+              var ROTATE_Y = 90 - DIFFERENCE;
+              $TARGET_CARD.css('transform', 'rotateY(' + ROTATE_Y + 'deg)');
             }
-            var DIFFERENCE = tweenValue - 90;
-            var ROTATE_Y = 90 - DIFFERENCE;
-            $TARGET_CARD.css('transform', 'rotateY(' + ROTATE_Y + 'deg)');
-          }
-        },
-        complete: function complete() {
+          },
+          complete: function complete() {
 
-          _this2.emit('opened');
-        }
+            resolve();
+          }
+        });
       });
     }
   }, {

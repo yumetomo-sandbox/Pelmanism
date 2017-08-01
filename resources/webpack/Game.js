@@ -20,10 +20,7 @@ class Game {
 
     this.cardUI
       .on('selected', clickTargetIndex => {
-        this.openCard(clickTargetIndex);
-      })
-      .on('opened', () => {
-        this.openedCard();
+        this.openedCard(clickTargetIndex);
       })
 
   }
@@ -39,13 +36,14 @@ class Game {
 
   }
 
-  openCard(clickTargetIndex) {
+  openedCard(clickTargetIndex) {
 
-    this.cardUI.open(clickTargetIndex, this.colors);
+    this.cardUI.open(clickTargetIndex, this.colors)
+      .then(() => this.judge());
 
   }
 
-  openedCard() {
+  judge() {
 
     const $OPEN_CARDS = $('li.open');
     const OPEN_CARDS_LENGTH = $OPEN_CARDS.length;
@@ -56,17 +54,12 @@ class Game {
 
       const FIRST_CARD_COLOR = $(FIRST_CARD).text();
       const SECOND_CARD_COLOR = $(SECOND_CARD).text();
-      this.judge(FIRST_CARD_COLOR, SECOND_CARD_COLOR);
-    }
 
-  }
-
-  judge(firstCardColor, secondCardColor) {
-
-    if(firstCardColor === secondCardColor) {
-      this.match();
-    } else {
-      this.cardUI.close();
+      if(FIRST_CARD_COLOR === SECOND_CARD_COLOR) {
+        this.match();
+      } else {
+        this.cardUI.close();
+      }
     }
 
   }

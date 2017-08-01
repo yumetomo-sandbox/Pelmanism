@@ -11,4 +11,4 @@ CONFIG.COLORS = [
   {name: "黒", color: "#000", class: "black"}
 ]
 
-export { CONFIG };
+export {CONFIG};
