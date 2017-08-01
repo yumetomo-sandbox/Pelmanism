@@ -88,16 +88,16 @@ var Game = function () {
     key: 'openedCard',
     value: function openedCard() {
 
-      var $openCards = (0, _jquery2.default)('li.open');
-      var $openCardsLength = $openCards.length;
+      var $OPEN_CARDS = (0, _jquery2.default)('li.open');
+      var OPEN_CARDS_LENGTH = $OPEN_CARDS.length;
 
-      if ($openCardsLength === 2) {
-        var firstCard = $openCards[0];
-        var secondCard = $openCards[1];
+      if (OPEN_CARDS_LENGTH === 2) {
+        var FIRST_CARD = $OPEN_CARDS[0];
+        var SECOND_CARD = $OPEN_CARDS[1];
 
-        var firstCardColor = (0, _jquery2.default)(firstCard).text();
-        var secondCardColor = (0, _jquery2.default)(secondCard).text();
-        this.judge(firstCardColor, secondCardColor);
+        var FIRST_CARD_COLOR = (0, _jquery2.default)(FIRST_CARD).text();
+        var SECOND_CARD_COLOR = (0, _jquery2.default)(SECOND_CARD).text();
+        this.judge(FIRST_CARD_COLOR, SECOND_CARD_COLOR);
       }
     }
   }, {
@@ -114,12 +114,12 @@ var Game = function () {
     key: 'match',
     value: function match() {
 
-      var $openCards = (0, _jquery2.default)('li.open');
-      $openCards.removeClass('open');
-      $openCards.addClass('match');
+      var $OPEN_CARDS = (0, _jquery2.default)('li.open');
+      $OPEN_CARDS.removeClass('open');
+      $OPEN_CARDS.addClass('match');
 
-      var matchCardsLength = (0, _jquery2.default)('li.match').length;
-      if (matchCardsLength === 16) {
+      var MATCH_CARDS_LENGTH = (0, _jquery2.default)('li.match').length;
+      if (MATCH_CARDS_LENGTH === 16) {
         alert('success !');
         this.restart();
       }
@@ -183,21 +183,18 @@ var CardUI = exports.CardUI = function (_events) {
 
     var _this = _possibleConstructorReturn(this, (CardUI.__proto__ || Object.getPrototypeOf(CardUI)).call(this));
 
-    (0, _jquery2.default)(function () {
+    _this.$cards = (0, _jquery2.default)('li');
 
-      var $cards = (0, _jquery2.default)('li');
+    _this.$cards.on('click', function (e) {
 
-      $cards.on('click', function (e) {
+      var CLICK_TARGET = e.currentTarget;
 
-        var clickTarget = e.currentTarget;
+      // 既に開かれている場合は処理しない
+      if (!(0, _jquery2.default)(CLICK_TARGET).hasClass('open') && !(0, _jquery2.default)(CLICK_TARGET).hasClass('match')) {
 
-        // 既に開かれている場合は処理しない
-        if (!(0, _jquery2.default)(clickTarget).hasClass('open') && !(0, _jquery2.default)(clickTarget).hasClass('match')) {
-
-          var clickTargetIndex = $cards.index((0, _jquery2.default)(clickTarget));
-          _this.emit('selected', clickTargetIndex);
-        }
-      });
+        var CLICK_TARGET_INDEX = _this.$cards.index((0, _jquery2.default)(CLICK_TARGET));
+        _this.emit('selected', CLICK_TARGET_INDEX);
+      }
     });
 
     return _this;
@@ -208,32 +205,30 @@ var CardUI = exports.CardUI = function (_events) {
     value: function open(clickTargetIndex, colors) {
       var _this2 = this;
 
-      var colorClass = colors[clickTargetIndex].class;
-      var colorName = colors[clickTargetIndex].name;
-      var $targetCard = (0, _jquery2.default)('li').eq(clickTargetIndex);
+      var COLOR_CLASS = colors[clickTargetIndex].class;
+      var COLOR_NAME = colors[clickTargetIndex].name;
+      var $TARGET_CARD = (0, _jquery2.default)('li').eq(clickTargetIndex);
 
-      (0, _velocityAnimate2.default)($targetCard, {
-        width: [0, 200],
-        marginLeft: [100, 0],
-        marginRight: [100, 20]
+      (0, _velocityAnimate2.default)($TARGET_CARD, {
+        rotateY: ['180deg', '0deg'],
+        tween: 180
       }, {
-        duration: 150,
+        duration: 400,
+        progress: function progress(elements, complete, remaining, start, tweenValue) {
+
+          if (tweenValue >= 90) {
+            if (!$TARGET_CARD.hasClass('open')) {
+              $TARGET_CARD.addClass(COLOR_CLASS + ' open');
+              $TARGET_CARD.html(COLOR_NAME);
+            }
+            var DIFFERENCE = tweenValue - 90;
+            var ROTATE_Y = 90 - DIFFERENCE;
+            $TARGET_CARD.css('transform', 'rotateY(' + ROTATE_Y + 'deg)');
+          }
+        },
         complete: function complete() {
 
-          $targetCard.addClass(colorClass + ' open');
-          $targetCard.html(colorName);
-
-          (0, _velocityAnimate2.default)($targetCard, {
-            width: [200, 0],
-            marginLeft: [0, 100],
-            marginRight: [20, 100]
-          }, {
-            duration: 150,
-            complete: function complete() {
-
-              _this2.emit('opened');
-            }
-          });
+          _this2.emit('opened');
         }
       });
     }
@@ -241,53 +236,36 @@ var CardUI = exports.CardUI = function (_events) {
     key: 'close',
     value: function close() {
 
-      var $openCards = (0, _jquery2.default)('li.open');
-      (0, _velocityAnimate2.default)($openCards, {
-        width: [0, 200],
-        marginLeft: [100, 0],
-        marginRight: [100, 20]
-      }, {
-        duration: 200,
-        delay: 400,
-        complete: function complete() {
-
-          $openCards.removeClass();
-          $openCards.html('?');
-
-          (0, _velocityAnimate2.default)($openCards, {
-            width: [200, 0],
-            marginLeft: [0, 100],
-            marginRight: [20, 100]
-          }, {
-            duration: 200
-          });
-        }
-      });
+      var $OPEN_CARDS = (0, _jquery2.default)('li.open');
+      CardUI.flip($OPEN_CARDS);
     }
   }, {
     key: 'closeAllCards',
     value: function closeAllCards() {
 
-      var $cards = (0, _jquery2.default)('li');
+      var $OPEN_CARDS = this.$cards;
+      CardUI.flip($OPEN_CARDS);
+    }
+  }], [{
+    key: 'flip',
+    value: function flip($cards) {
+
       (0, _velocityAnimate2.default)($cards, {
-        width: [0, 200],
-        marginLeft: [100, 0],
-        marginRight: [100, 20]
+        rotateY: ['180deg', '0deg'],
+        tween: 180
       }, {
-        duration: 200,
+        duration: 500,
         delay: 400,
-        complete: function complete() {
-
-          $cards.removeClass();
-          $cards.html('?');
-
-          (0, _velocityAnimate2.default)($cards, {
-            width: [200, 0],
-            marginLeft: [0, 100],
-            marginRight: [20, 100]
-          }, {
-            duration: 200
-          });
+        progress: function progress(elements, complete, remaining, start, tweenValue) {
+          if (tweenValue >= 90) {
+            if ($cards.hasClass('open') || $cards.hasClass('match')) {
+              $cards.removeClass();
+              $cards.html('?');
+            }
+            var DIFFERENCE = tweenValue - 90;
+            var ROTATE_Y = 90 - DIFFERENCE;
+            $cards.css('transform', 'rotateY(' + ROTATE_Y + 'deg)');
+          }
         }
       });
     }

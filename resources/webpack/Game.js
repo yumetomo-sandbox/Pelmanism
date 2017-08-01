@@ -47,16 +47,16 @@ class Game {
 
   openedCard() {
 
-    let $openCards = $('li.open');
-    let $openCardsLength = $openCards.length;
+    const $OPEN_CARDS = $('li.open');
+    const OPEN_CARDS_LENGTH = $OPEN_CARDS.length;
 
-    if($openCardsLength === 2) {
-      let firstCard = $openCards[0];
-      let secondCard = $openCards[1];
+    if(OPEN_CARDS_LENGTH === 2) {
+      const FIRST_CARD = $OPEN_CARDS[0];
+      const SECOND_CARD = $OPEN_CARDS[1];
 
-      let firstCardColor = $(firstCard).text();
-      let secondCardColor = $(secondCard).text();
-      this.judge(firstCardColor, secondCardColor);
+      const FIRST_CARD_COLOR = $(FIRST_CARD).text();
+      const SECOND_CARD_COLOR = $(SECOND_CARD).text();
+      this.judge(FIRST_CARD_COLOR, SECOND_CARD_COLOR);
     }
 
   }
@@ -73,16 +73,16 @@ class Game {
 
   match() {
 
-    let $openCards = $('li.open');
-    $openCards.removeClass('open');
-    $openCards.addClass('match');
+    const $OPEN_CARDS = $('li.open');
+    $OPEN_CARDS.removeClass('open');
+    $OPEN_CARDS.addClass('match');
 
-    let matchCardsLength = $('li.match').length;
-    if(matchCardsLength === 16) {
+    const MATCH_CARDS_LENGTH = $('li.match').length;
+    if(MATCH_CARDS_LENGTH === 16) {
       alert('success !');
       this.restart();
     }
-    
+
   }
 
   restart() {

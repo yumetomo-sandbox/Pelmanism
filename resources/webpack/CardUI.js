@@ -8,23 +8,19 @@ export class CardUI extends events {
   constructor(){
     super();
 
-    $(() => {
+    this.$cards = $('li');
 
-      let $cards = $('li');
+    this.$cards.on('click', e => {
 
-      $cards.on('click', e => {
+      const CLICK_TARGET = e.currentTarget;
 
-        let clickTarget = e.currentTarget;
+      // 既に開かれている場合は処理しない
+      if(!$(CLICK_TARGET).hasClass('open') && !$(CLICK_TARGET).hasClass('match')) {
 
-        // 既に開かれている場合は処理しない
-        if(!$(clickTarget).hasClass('open') && !$(clickTarget).hasClass('match')) {
+        const CLICK_TARGET_INDEX = this.$cards.index($(CLICK_TARGET));
+        this.emit('selected', CLICK_TARGET_INDEX);
 
-          let clickTargetIndex = $cards.index($(clickTarget));
-          this.emit('selected', clickTargetIndex);
-
-        }
-
-      });
+      }
 
     });
 
@@ -32,33 +28,31 @@ export class CardUI extends events {
 
   open(clickTargetIndex, colors) {
 
-    let colorClass = colors[clickTargetIndex].class;
-    let colorName = colors[clickTargetIndex].name;
-    let $targetCard = $('li').eq(clickTargetIndex);
+    const COLOR_CLASS = colors[clickTargetIndex].class;
+    const COLOR_NAME = colors[clickTargetIndex].name;
+    const $TARGET_CARD = $('li').eq(clickTargetIndex);
 
-    velocity($targetCard, {
-      width: [0, 200],
-      marginLeft: [100, 0],
-      marginRight: [100, 20]
+    velocity($TARGET_CARD, {
+      rotateY: ['180deg', '0deg'],
+      tween: 180
     }, {
-      duration: 150,
+      duration: 400,
+      progress: function(elements, complete, remaining, start, tweenValue) {
+
+        if(tweenValue >= 90) {
+          if(!$TARGET_CARD.hasClass('open')){
+            $TARGET_CARD.addClass(`${COLOR_CLASS} open`);
+            $TARGET_CARD.html(COLOR_NAME);
+          }
+          const DIFFERENCE = tweenValue - 90;
+          const ROTATE_Y = 90 - DIFFERENCE;
+          $TARGET_CARD.css('transform','rotateY('+ ROTATE_Y +'deg)');
+        }
+
+      },
       complete: () => {
 
-        $targetCard.addClass(`${colorClass} open`);
-        $targetCard.html(colorName);
-
-        velocity($targetCard, {
-          width: [200, 0],
-          marginLeft: [0, 100],
-          marginRight: [20, 100]
-        }, {
-          duration: 150,
-          complete: () => {
-
-            this.emit('opened');
-
-          }
-        });
+        this.emit('opened');
 
       }
     });
@@ -67,56 +61,39 @@ export class CardUI extends events {
 
   close() {
 
-    let $openCards = $('li.open');
-    velocity($openCards, {
-      width: [0, 200],
-      marginLeft: [100, 0],
-      marginRight: [100, 20]
-    }, {
-      duration: 200,
-      delay: 400,
-      complete: () => {
+    const $OPEN_CARDS = $('li.open');
+    CardUI.flip($OPEN_CARDS);
 
-        $openCards.removeClass();
-        $openCards.html('?');
-
-        velocity($openCards, {
-          width: [200, 0],
-          marginLeft: [0, 100],
-          marginRight: [20, 100]
-        }, {
-          duration: 200
-        });
-
-      }
-    });
   }
 
   closeAllCards() {
 
-    let $cards = $('li');
+    const $OPEN_CARDS = this.$cards;
+    CardUI.flip($OPEN_CARDS);
+
+  }
+
+  static flip($cards) {
+
     velocity($cards, {
-      width: [0, 200],
-      marginLeft: [100, 0],
-      marginRight: [100, 20]
+      rotateY: ['180deg', '0deg'],
+      tween: 180
     }, {
-      duration: 200,
+      duration: 500,
       delay: 400,
-      complete: () => {
-
-        $cards.removeClass();
-        $cards.html('?');
-
-        velocity($cards, {
-          width: [200, 0],
-          marginLeft: [0, 100],
-          marginRight: [20, 100]
-        }, {
-          duration: 200
-        });
-
+      progress: function(elements, complete, remaining, start, tweenValue) {
+        if(tweenValue >= 90) {
+          if($cards.hasClass('open') || $cards.hasClass('match')){
+            $cards.removeClass();
+            $cards.html('?');
+          }
+          const DIFFERENCE = tweenValue - 90;
+          const ROTATE_Y = 90 - DIFFERENCE;
+          $cards.css('transform','rotateY('+ ROTATE_Y +'deg)');
+        }
       }
     });
+
   }
 
 }
