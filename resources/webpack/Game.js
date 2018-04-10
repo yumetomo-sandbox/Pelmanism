@@ -1,90 +1,80 @@
-import $ from 'jquery';
 import _ from 'underscore';
-import {CONFIG} from './config';
-import {CardUI} from './CardUI';
+import CONFIG from './modules/Config';
+import CardUI from './modules/CardUI';
+import CountUI from './modules/CountUI';
 
 class Game {
-
   constructor() {
-
-    // 配列初期化
+    // 配列宣言
     this.colors = [];
     this.cardUI = new CardUI();
+    this.countUI = new CountUI();
 
     this.bind();
-    this.setColors();
-
+    this.init();
   }
 
   bind() {
-
-    this.cardUI
-      .on('selected', clickTargetIndex => {
-        this.openedCard(clickTargetIndex);
-      })
-
+    // カードが選択されたら色情報を渡してカードを開く処理を実行
+    this.cardUI.on('selected', cardIndex => {
+      this.cardUI.open(cardIndex, this.colors).then(() => this.judge());
+    });
   }
 
   /**
    * 色情報の配列を2つ分格納してシャッフル
    */
-  setColors() {
-
+  init() {
     this.colors = CONFIG.COLORS.concat(CONFIG.COLORS);
-
     this.colors = _.shuffle(this.colors);
 
+    this.count = CONFIG.COUNT;
+    this.countUI.countdown(this.count);
+
+    this.totalCard = this.count * 2;
   }
 
-  openedCard(clickTargetIndex) {
-
-    this.cardUI.open(clickTargetIndex, this.colors)
-      .then(() => this.judge());
-
-  }
-
+  /**
+   * 開かれたカードが2枚なら判定を行う
+   */
   judge() {
+    const $openCards = $('li.open');
+    const openCardsLength = $openCards.length;
 
-    const $OPEN_CARDS = $('li.open');
-    const OPEN_CARDS_LENGTH = $OPEN_CARDS.length;
+    if (openCardsLength === 2) {
+      this.count = this.count - 1;
+      this.countUI.countdown(this.count);
 
-    if(OPEN_CARDS_LENGTH === 2) {
-      const FIRST_CARD = $OPEN_CARDS[0];
-      const SECOND_CARD = $OPEN_CARDS[1];
+      const $firstCard = $openCards.eq(0);
+      const $secondCard = $openCards.eq(1);
 
-      const FIRST_CARD_COLOR = $(FIRST_CARD).text();
-      const SECOND_CARD_COLOR = $(SECOND_CARD).text();
+      const firstCardColor = $firstCard.text();
+      const secondCardColor = $secondCard.text();
 
-      if(FIRST_CARD_COLOR === SECOND_CARD_COLOR) {
-        this.match();
+      // 色が一致していれば開いたままに、していなければ閉じる
+      if (firstCardColor === secondCardColor) {
+        this.match($openCards);
       } else {
-        this.cardUI.close();
+        this.cardUI.close($openCards);
       }
     }
-
   }
 
-  match() {
+  match($openCards) {
+    $openCards.removeClass('open');
+    $openCards.addClass('match');
 
-    const $OPEN_CARDS = $('li.open');
-    $OPEN_CARDS.removeClass('open');
-    $OPEN_CARDS.addClass('match');
-
-    const MATCH_CARDS_LENGTH = $('li.match').length;
-    if(MATCH_CARDS_LENGTH === 16) {
+    const matchCardLength = $('li.match').length;
+    if (matchCardLength === this.totalCard) {
       alert('success !');
       this.restart();
     }
-
   }
 
   restart() {
-
-    this.setColors();
+    this.init();
     this.cardUI.closeAllCards();
-
   }
-
 }
 
 new Game();
