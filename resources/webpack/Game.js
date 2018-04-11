@@ -31,7 +31,7 @@ class Game {
     this.count = CONFIG.COUNT;
     this.countUI.countdown(this.count);
 
-    this.totalCard = this.count * 2;
+    this.totalCard = CONFIG.COLORS.length * 2;
   }
 
   /**
@@ -55,7 +55,7 @@ class Game {
       if (firstCardColor === secondCardColor) {
         this.match($openCards);
       } else {
-        this.cardUI.close($openCards);
+        this.count === 0 ? this.restart() : this.cardUI.close($openCards);
       }
     }
   }
