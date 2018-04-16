@@ -4,7 +4,8 @@ const webpack = require('webpack');
 module.exports = {
   // エントリーポイントの設定
   entry: {
-    game: path.join(__dirname, 'webpack/game.js')
+    game: path.join(__dirname, 'webpack/game.js'),
+    game_vue: path.join(__dirname, 'webpack/game_vue.js')
   },
   // 出力の設定
   output: {
@@ -23,12 +24,20 @@ module.exports = {
   module: {
     rules: [
       {
-        // ローダーの対象ファイル
-        test: /\.js$/,
-        // ローダーの対象から外すディレクトリ
+        test: /\.vue/,
         exclude: /node_modules/,
-        // 利用するローダー
-        use: 'babel-loader?presets[]=es2015'
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            js: 'babel-loader',
+            scss: 'vue-style-loader!css-loader!sass-loader'
+          }
+        }
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       }
     ]
   },
