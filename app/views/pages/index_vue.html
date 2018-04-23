@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="utf-8">
     <title>Pelmanism</title>
@@ -7,28 +6,12 @@
   </head>
   <body>
     <div id="app">
-      {{message}}
-    </div>
-    <p>残り<span id="count"></span>回</p>
-    <div class="wrap">
-      <ul>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-        <li>?</li>
-      </ul>
+      <p>残り{{ count }}回</p>
+      <div class="wrap">
+        <ul>
+          <li v-for="card in cards" v-on:click="select(card.index)" :class="card.status">{{ card.text }}</li>
+        </ul>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./../../webroot/js/vendor.bundle.js"></script>

@@ -14,7 +14,8 @@
   },
   "globals": {
     "velocity": true,
-    "YT": true
+    "YT": true,
+    "Vue": true
   },
   "rules": {
     "no-console"  : 0,
