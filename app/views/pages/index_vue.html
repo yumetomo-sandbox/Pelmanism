@@ -9,7 +9,7 @@
       <p>残り{{ count }}回</p>
       <div class="wrap">
         <ul>
-          <li v-for="card in cards" v-on:click="select(card.index)" :class="card.status">{{ card.text }}</li>
+          <li v-for="card in cards" v-on:click="select(card.index)" :class="[card.status, card.color]">{{ card.text }}</li>
         </ul>
       </div>
     </div>

@@ -21,7 +21,7 @@ new Vue({
 
       this.cards.splice(0, this.cards.length);
       for (let index = 0; index < this.totalCard; index++) {
-        this.cards.push({ text: '?', index: index, status: '' });
+        this.cards.push({ text: '?', index: index, status: '', color: '' });
       }
 
       this.count = CONFIG.COUNT;
@@ -35,7 +35,6 @@ new Vue({
       const isOpened = this.isOpened(index);
       if (!isOpened) {
         this.open(index);
-        this.openCards.push(this.cards[index]);
       }
     },
 
@@ -74,6 +73,7 @@ new Vue({
             }
           },
           complete: () => {
+            this.openCards.push(this.cards[index]);
             this.checkOpenCardLength();
           }
         }
@@ -84,7 +84,8 @@ new Vue({
      * カードのデータを更新
      */
     updateCardData(index, colorClass) {
-      this.cards[index].status = `${colorClass} open`;
+      this.cards[index].status = 'open';
+      this.cards[index].color = colorClass;
       this.cards[index].text = this.colors[index].text;
     },
 
@@ -117,7 +118,7 @@ new Vue({
      * 選択されたカードを閉じる
      */
     close() {
-      const indexs = [
+      const indexes = [
         { number: this.openCards[0].index },
         { number: this.openCards[1].index }
       ];
@@ -125,7 +126,7 @@ new Vue({
       this.openCards.splice(0, 2);
 
       for (let index = 0; index < 2; index++) {
-        const cardIndex = indexs[index].number;
+        const cardIndex = indexes[index].number;
         const $card = document.querySelectorAll('li')[cardIndex];
         velocity(
           $card,
@@ -135,20 +136,28 @@ new Vue({
           },
           {
             duration: 500,
-            delay: 400,
+            delay: 500,
             progress: (elements, complete, remaining, start, tweenValue) => {
               // 半分までアニメーションしたらclassを付与して折り返す
               if (tweenValue >= 90) {
-                this.cards[cardIndex].status = '';
-                this.cards[cardIndex].text = '?';
                 const difference = tweenValue - 90;
                 const rotateY = 90 - difference;
                 $card.style.transform = `rotateY(${rotateY}deg)`;
+                this.resetCardData(cardIndex);
               }
             }
           }
         );
       }
+    },
+
+    /**
+     * カードを閉じた状態に戻す
+     */
+    resetCardData(index) {
+      this.cards[index].status = '';
+      this.cards[index].color = '';
+      this.cards[index].text = '?';
     },
 
     /**
@@ -158,10 +167,10 @@ new Vue({
       const isAllMatch = this.matchCount === this.totalCard;
 
       if (isAllMatch) {
-        console.log('clear');
+        alert('complete!!');
         this.init();
       } else if (this.count === 0) {
-        console.log('failed');
+        alert('failed...');
         this.init();
       }
     }
