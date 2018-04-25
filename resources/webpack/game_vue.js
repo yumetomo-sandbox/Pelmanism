@@ -29,7 +29,7 @@ new Vue({
     },
 
     /**
-     * 選択されたらカードのテキストを変更
+     * 選択されたカードが既に開かれているかチェック
      */
     select(index) {
       const isOpened = this.isOpened(index);
@@ -49,7 +49,7 @@ new Vue({
     },
 
     /**
-     * カードのデータを更新する
+     * カードを開く
      */
     open(index) {
       this.cards[index].status = 'open';
